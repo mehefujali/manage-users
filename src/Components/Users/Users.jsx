@@ -6,8 +6,9 @@ import { SignalContext } from "../../context/SignalProvider";
 
 
 const Users = () => {
-      const {signal} = useContext(SignalContext)
+      const { signal, setSignal } = useContext(SignalContext)
       const [users, setUsers] = useState([])
+      const [user, setUser] = useState({})
       useEffect(() => {
             fetch('http://localhost:8080/users')
                   .then(res => res.json())
@@ -21,7 +22,7 @@ const Users = () => {
                   icon: "warning",
                   showCancelButton: true,
                   confirmButtonColor: "#d33",
-                  cancelButtonColor: "#3085d6",
+                  cancelButtonColor: "#3B82F6",
                   confirmButtonText: "Yes, delete it!"
             }).then((result) => {
                   if (result.isConfirmed) {
@@ -46,8 +47,94 @@ const Users = () => {
             });
 
       }
+
+
+      const handleUpdateUser = async (id) => {
+            fetch(`http://localhost:8080/user/${id}`)
+                  .then(res => res.json())
+                  .then(data => setUser(data))
+            const { value: formValues } = await Swal.fire({
+                  title: "Update  User",
+                  html: `
+                <form id="add-user-form" class=" bg-base-100 flex flex-col gap-3 p-6 border border-black dark:border-white rounded-lg shadow-lg">
+                  <input value="${user.name}" required type="text" name="name" placeholder="Enter Full Name" class="input focus:outline-none border-black dark:border-white" />
+                  <input value="${user.email}" required type="text" name="email" placeholder="Enter Email" class="input focus:outline-none border-black dark:border-white" />
+                  <input value="${user.photo}" required type="text" name="photo" placeholder="Enter Photo URL" class="input focus:outline-none border-black dark:border-white" />
+                  <div class="flex gap-4 text-black dark:text-white">
+                    <label class="flex gap-2">
+                      Male
+                      <input ${user.gnder === "Male" && "checked"}  required value="Male" class="checkbox" type="radio" name="gnder" />
+                    </label>
+                    <label class="flex gap-2">
+                      Female
+                      <input ${user.gnder === "Female" && "checked"} required value="Female" class="checkbox" type="radio" name="gnder" />
+                    </label>
+                  </div>
+                  <div class="flex gap-4 text-black dark:text-white">
+                    <label class="flex gap-2">
+                      Active
+                      <input ${user.status === "Active" && "checked"} required value="Active" class="checkbox" type="radio" name="status" />
+                    </label>
+                    <label class="flex gap-2">
+                      Inactive
+                      <input ${user.status === "Inactive" && "checked"} required value="Inactive" class="checkbox" type="radio" name="status" />
+                    </label>
+                  </div>
+                </form>
+              `,
+                  showCancelButton: true,
+                  confirmButtonText: "Update user",
+                  confirmButtonColor: "#3B82F6",
+
+                  focusConfirm: false,
+                  preConfirm: () => {
+                        const form = document.getElementById("add-user-form");
+                        const formData = new FormData(form);
+
+                        const user = {
+                              name: formData.get("name"),
+                              email: formData.get("email"),
+                              photo: formData.get("photo"),
+                              gnder: formData.get("gnder"),
+                              status: formData.get("status"),
+                        };
+
+                        if (!user.name || !user.email || !user.gender || !user.status) {
+                              Swal.showValidationMessage("Please fill out all fields!");
+                        }
+
+                        fetch(`http://localhost:8080/updateusers/${id}`, {
+                              method: "PUT",
+                              headers: {
+                                    "Content-Type": "application/json"
+                              },
+                              body: JSON.stringify(user)
+                        })
+                              .then(res => res.json())
+                              .then(data => {
+                                    console.log(data);
+
+                                    if (data.modifiedCount) {
+
+                                          Swal.fire({
+                                                icon: "success",
+                                                title: "User Updated Successfully",
+                                                html: `
+                                    
+                                  `,
+                                          });
+                                    }
+
+                              })
+
+                  },
+            });
+
+            setSignal(Math.random())
+      };
+
       return (
-            <div className=" w-11/12 mx-auto">
+            <div className=" w-11/12 mx-auto" >
                   <div className="overflow-x-auto text-black dark:text-white">
                         <table className="table">
                               {/* head */}
@@ -91,7 +178,7 @@ const Users = () => {
                                                 <td>{user?.gnder}</td>
                                                 <th>
                                                       <div className=" flex gap-2 ">
-                                                            <button className="btn btn-sm btn-circle text-black dark:text-white border  shadow shadow-slate-300"><FaEdit></FaEdit></button>
+                                                            <button onClick={() => handleUpdateUser(user._id)} className="btn btn-sm btn-circle text-black dark:text-white border  shadow shadow-slate-300"><FaEdit></FaEdit></button>
                                                             <button onClick={() => handleDleteUser(user._id)} className="btn btn-sm text-red-500 btn-circle border  shadow shadow-slate-300"><MdDeleteOutline></MdDeleteOutline></button>
                                                       </div>
                                                 </th>
@@ -102,7 +189,7 @@ const Users = () => {
 
                         </table>
                   </div>
-            </div>
+            </div >
       );
 };
 
