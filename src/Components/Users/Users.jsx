@@ -8,7 +8,7 @@ import { SignalContext } from "../../context/SignalProvider";
 const Users = () => {
       const { signal, setSignal } = useContext(SignalContext)
       const [users, setUsers] = useState([])
-      const [user, setUser] = useState({})
+     
       useEffect(() => {
             fetch('http://localhost:8080/users')
                   .then(res => res.json())
@@ -50,34 +50,33 @@ const Users = () => {
 
 
       const handleUpdateUser = async (id) => {
-            fetch(`http://localhost:8080/user/${id}`)
-                  .then(res => res.json())
-                  .then(data => setUser(data))
+            const res = await fetch(`http://localhost:8080/user/${id}`);
+            const data = await res.json();
             const { value: formValues } = await Swal.fire({
                   title: "Update  User",
                   html: `
                 <form id="add-user-form" class=" bg-base-100 flex flex-col gap-3 p-6 border border-black dark:border-white rounded-lg shadow-lg">
-                  <input value="${user.name}" required type="text" name="name" placeholder="Enter Full Name" class="input focus:outline-none border-black dark:border-white" />
-                  <input value="${user.email}" required type="text" name="email" placeholder="Enter Email" class="input focus:outline-none border-black dark:border-white" />
-                  <input value="${user.photo}" required type="text" name="photo" placeholder="Enter Photo URL" class="input focus:outline-none border-black dark:border-white" />
+                  <input value="${data.name}" required type="text" name="name" placeholder="Enter Full Name" class="input focus:outline-none border-black dark:border-white" />
+                  <input value="${data.email}" required type="text" name="email" placeholder="Enter Email" class="input focus:outline-none border-black dark:border-white" />
+                  <input value="${data.photo}" required type="text" name="photo" placeholder="Enter Photo URL" class="input focus:outline-none border-black dark:border-white" />
                   <div class="flex gap-4 text-black dark:text-white">
                     <label class="flex gap-2">
                       Male
-                      <input ${user.gnder === "Male" && "checked"}  required value="Male" class="checkbox" type="radio" name="gnder" />
+                      <input ${data.gnder === "Male" && "checked"}  required value="Male" class="checkbox" type="radio" name="gnder" />
                     </label>
                     <label class="flex gap-2">
                       Female
-                      <input ${user.gnder === "Female" && "checked"} required value="Female" class="checkbox" type="radio" name="gnder" />
+                      <input ${data.gnder === "Female" && "checked"} required value="Female" class="checkbox" type="radio" name="gnder" />
                     </label>
                   </div>
                   <div class="flex gap-4 text-black dark:text-white">
                     <label class="flex gap-2">
                       Active
-                      <input ${user.status === "Active" && "checked"} required value="Active" class="checkbox" type="radio" name="status" />
+                      <input ${data.status === "Active" && "checked"} required value="Active" class="checkbox" type="radio" name="status" />
                     </label>
                     <label class="flex gap-2">
                       Inactive
-                      <input ${user.status === "Inactive" && "checked"} required value="Inactive" class="checkbox" type="radio" name="status" />
+                      <input ${data.status === "Inactive" && "checked"} required value="Inactive" class="checkbox" type="radio" name="status" />
                     </label>
                   </div>
                 </form>
