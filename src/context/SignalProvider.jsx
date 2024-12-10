@@ -7,8 +7,9 @@ import { createContext, useState } from "react";
 export const SignalContext = createContext()
 const SignalProvider = ({children}) => {
       const [signal,setSignal] = useState()
+      const [searchUser,setSearchUser] = useState('')
       return (
-            <SignalContext.Provider  value={{signal,setSignal}}>
+            <SignalContext.Provider  value={{signal,setSignal,searchUser,setSearchUser}}>
                         {children}
             </SignalContext.Provider>
       );

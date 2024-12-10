@@ -1,10 +1,13 @@
-import { useContext } from "react";
+import { useContext, useState } from "react";
 import { ThemeContext } from "../../context/ThemeProvider";
+import { SignalContext } from "../../context/SignalProvider";
 
 
 const Navbar = () => {
       const { theme, setTheme } = useContext(ThemeContext)
-
+      const {setSearchUser} = useContext(SignalContext)
+       
+       
       const handleChangeTheme = () => {
 
             document.documentElement.classList.toggle('dark');
@@ -20,7 +23,9 @@ const Navbar = () => {
                         <div className="flex-none gap-2">
 
                               <div className="form-control">
-                                    <input type="text" placeholder="Search" className="input input-bordered w-24 md:w-auto bg-transparent border-white placeholder:text-white text-white focus:border-white shadow-md focus:outline-none" />
+                                    <input onChange={(e)=>{ setSearchUser(e.target.value)
+                                          
+                                    }} type="text" placeholder="Search" className="input input-bordered w-24 md:w-auto bg-transparent border-white placeholder:text-white text-white focus:border-white shadow-md focus:outline-none" />
                               </div>
 
                               <div className="dropdown dropdown-end">

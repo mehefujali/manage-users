@@ -8,12 +8,13 @@ import { SignalContext } from "../../context/SignalProvider";
 const Users = () => {
       const { signal, setSignal } = useContext(SignalContext)
       const [users, setUsers] = useState([])
+      const {searchUser} = useContext(SignalContext)
      
       useEffect(() => {
-            fetch('http://localhost:8080/users')
+            fetch(`http://localhost:8080/users?search=${searchUser}`)
                   .then(res => res.json())
                   .then(data => setUsers(data))
-      }, [signal])
+      }, [signal,searchUser])
 
       const handleDleteUser = id => {
             Swal.fire({
