@@ -11,7 +11,7 @@ const Users = () => {
       const {searchUser} = useContext(SignalContext)
      
       useEffect(() => {
-            fetch(`http://localhost:8080/users?search=${searchUser}`)
+            fetch(`https://user-management-server-pied.vercel.app/users?search=${searchUser}`)
                   .then(res => res.json())
                   .then(data => setUsers(data))
       }, [signal,searchUser])
@@ -27,7 +27,7 @@ const Users = () => {
                   confirmButtonText: "Yes, delete it!"
             }).then((result) => {
                   if (result.isConfirmed) {
-                        fetch(`http://localhost:8080/users/${id}`, {
+                        fetch(`https://user-management-server-pied.vercel.app/users/${id}`, {
                               method: "DELETE"
                         })
                               .then(res => res.json())
@@ -51,7 +51,7 @@ const Users = () => {
 
 
       const handleUpdateUser = async (id) => {
-            const res = await fetch(`http://localhost:8080/user/${id}`);
+            const res = await fetch(`https://user-management-server-pied.vercel.app/user/${id}`);
             const data = await res.json();
             const { value: formValues } = await Swal.fire({
                   title: "Update  User",
@@ -103,7 +103,7 @@ const Users = () => {
                               Swal.showValidationMessage("Please fill out all fields!");
                         }
 
-                        fetch(`http://localhost:8080/updateusers/${id}`, {
+                        fetch(`https://user-management-server-pied.vercel.app/updateusers/${id}`, {
                               method: "PUT",
                               headers: {
                                     "Content-Type": "application/json"

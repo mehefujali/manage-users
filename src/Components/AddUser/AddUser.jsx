@@ -26,7 +26,7 @@ const AddUser = () => {
 
             }
 
-            fetch('http://localhost:8080/users', {
+            fetch('https://user-management-server-pied.vercel.app/users', {
                   method: "POST",
                   headers: {
                       "Content-Type": "application/json"
